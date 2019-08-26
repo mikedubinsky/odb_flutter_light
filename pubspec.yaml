@@ -1,5 +1,5 @@
 name: odb_flutter_light
-description: A new Flutter project.
+description: A basic ODB audio player
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -23,7 +23,6 @@ dependencies:
   path_provider: ^1.1.0
   audioplayers: ^0.13.1
   intl: ^0.15.8
-  datetime_picker_formfield: ^0.4.2
 
 
   # The following adds the Cupertino Icons font to your application.

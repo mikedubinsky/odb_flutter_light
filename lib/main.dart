@@ -16,7 +16,7 @@ const kUrl2 = 'https://dzxuyknqkmi1e.cloudfront.net/odb/2019/08/odb-08-19-19.mp3
 const kUrl3 = 'https://dzxuyknqkmi1e.cloudfront.net/odb/2019/08/odb-08-20-19.mp3';
 
 // TODO: Bug: Need to select a date, change tabs, and return for audio player to work
-// TODO: Remove Download tab and add download button to main page
+// TODO: Remove Download tab and add download button to main page (download file is currently hard coded)
 
 void main() {
   runApp(new MaterialApp(home: new ExampleApp()));
@@ -30,10 +30,19 @@ class ExampleApp extends StatefulWidget {
 class _ExampleAppState extends State<ExampleApp> {
   AudioCache audioCache = AudioCache();
   AudioPlayer advancedPlayer = AudioPlayer();
-  String localFilePath;
+  String localFilePath = '';
   final dateFormat = DateFormat("MMMM-dd-yyyy");
   DateTime selectedDate = DateTime.now();
   String audioUrl = '';
+
+  // function to return the audio URL
+    String generateAudioUrl(DateTime picked) {
+    String month = twoDigit(picked.month.toString());
+    String day = twoDigit(picked.day.toString());
+    String year = twoDigit(picked.year.toString());
+    String fullYear = picked.year.toString();
+    return 'https://dzxuyknqkmi1e.cloudfront.net/odb/$fullYear/$month/odb-$month-$day-$year.mp3';
+  }
 
   // function to return 2 digits month or day
   String twoDigit(String temp) {
@@ -53,14 +62,9 @@ class _ExampleAppState extends State<ExampleApp> {
         firstDate: DateTime(2010),
         lastDate: DateTime(2030));
     if (picked != null && picked != selectedDate) {
-      String month = twoDigit(picked.month.toString());
-      String day = twoDigit(picked.day.toString());
-      String year = twoDigit(picked.year.toString());
-      String fullYear = picked.year.toString();
       setState(() {
         selectedDate = picked;
-        audioUrl =
-        'https://dzxuyknqkmi1e.cloudfront.net/odb/$fullYear/$month/odb-$month-$day-$year.mp3';
+        audioUrl = generateAudioUrl(picked);
       });
     }
   }
@@ -94,6 +98,11 @@ class _ExampleAppState extends State<ExampleApp> {
   }
 
   Widget remoteUrl() {
+      if (audioUrl == '') {
+        setState(() {
+          audioUrl = generateAudioUrl(selectedDate);
+        });
+      }
     return SingleChildScrollView(
       child: _tab([
           SizedBox(height: 20.0,),
