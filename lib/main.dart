@@ -19,7 +19,9 @@ const kUrl3 = 'https://dzxuyknqkmi1e.cloudfront.net/odb/2019/08/odb-08-20-19.mp3
 // TODO: Remove Download tab and add download button to main page (download file is currently hard coded)
 
 void main() {
-  runApp(new MaterialApp(home: new ExampleApp()));
+  runApp(new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: new ExampleApp()));
 }
 
 class ExampleApp extends StatefulWidget {
@@ -139,17 +141,39 @@ class _ExampleAppState extends State<ExampleApp> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: const Color(0xFFFAB431),
+          elevation: 0.0,
+          title: new Center(child: new Text("Our Daily Bread  |  Audio Player"),),
+          leading: new IconButton(
+            //menu back button
+          icon:new Icon(
+            Icons.arrow_back_ios,
+          ),
+          color: const Color (0xFFDDDDDD),
+          onPressed: (){},
+          ),
+          actions: <Widget>[
+             //hamburger menu  button
+            new IconButton(
+              icon:new Icon(
+              Icons.menu,
+            ),
+                      color: const Color (0xFFDDDDDD),
+          onPressed: (){},
+            )
+            ],
           bottom: TabBar(
             tabs: [
               Tab(text: 'Remote File'),
               Tab(text: 'Download File'),
             ],
           ),
-          title: new Center(child: new Text("Our Daily Bread  |  Audio Player"),),
+
         ),
         body: TabBarView(
           children: [remoteUrl(), localFile()],
         ),
+
       ),
     );
   }
