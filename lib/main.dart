@@ -143,7 +143,7 @@ class _ExampleAppState extends State<ExampleApp> {
         appBar: AppBar(
           backgroundColor: const Color(0xFFFAB431),
           elevation: 0.0,
-          title: new Center(child: new Text("Our Daily Bread  |  Audio Player"),),
+          title: new Center(child: new Text("Our Daily Bread  |  Drive"),),
           leading: new IconButton(
             //menu back button
           icon:new Icon(

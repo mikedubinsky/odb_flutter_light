@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:odb_flutter_light/theme.dart';
 
 enum PlayerState { stopped, playing, paused }
 
@@ -68,92 +69,14 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     return new Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-                    //song title, artist name and controls
-            new Container(
-                color: Colors.blue,
-                child: new Padding(
-                  padding: const EdgeInsets.only(top: 40.0, bottom: 60.0),
-                  child: new Column(
-                    children: <Widget>[
-                      new RichText(
-                          text: new TextSpan(text: '', children: [
-                        new TextSpan(
-                          text: 'Devo Title\n',
-                          style: new TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 4.0,
-                            height: 1.5,
-                          ),
-                        ),
-                        new TextSpan(
-                            text: 'Authors Name\n',
-                            style: new TextStyle(
-                              color: Colors.white.withOpacity(0.65),
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 3.0,
-                              height: 1.5,
-                            ))
-                      ])),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30.0, bottom: 50.0),
-                        child: new Row(
-                          children: <Widget>[
-                            new Expanded(child: new Container()),
-                            /*new IconButton(
-                              icon: new Icon(
-                                //previous button
-                                Icons.skip_previous,
-                                color: Colors.white,
-                                size: 50.0,
-                              ),
-                              onPressed: () {
-                                //todo
-                              },
-                            ),*/
-                            new Expanded(child: new Container()),
-                            new RawMaterialButton(
-                              shape: new CircleBorder(),
-                              fillColor: Colors.white,
-                              splashColor: Colors.blue,
-                              highlightColor: Colors.blue.withOpacity(0.5),
-                              elevation: 15.0,
-                              highlightElevation: 0.5,
-                              onPressed: _isPlaying ? null:()=>_play(),
-                              child: new Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: new Icon(
-                                  //play  button
-                                  Icons.play_arrow,
-                                  color: Colors.blue,
-                                  size: 75,
-                                ),
-                              ),
-                            ),
-                            new Expanded(child: new Container()),
-                           /* new IconButton(
-                              icon: new Icon(
-                                //next button
-                                Icons.skip_next,
-                                color: Colors.white,
-                                size: 50.0,
-                              ),
-                              onPressed: () {
-                                //todo
-                              },
-                            ),*/
-                            new Expanded(child: new Container()),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                )),
+                   
         new Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+                    // Display the correct icon depending on the state of the player.
+        //Icon(
+          //_controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        //),
             new IconButton(
                 onPressed: _isPlaying ? null : () => _play(),
                 iconSize: 64.0,
@@ -202,7 +125,99 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             ),
           ],
         ),
-        new Text("State: $_audioPlayerState")
+        new Text("State: $_audioPlayerState"),
+         //song title, artist name and controls
+            new Container(
+                color: accentColor,
+                child: new Padding(
+                  padding: const EdgeInsets.only(top: 40.0, bottom: 160.0),
+                  child: new Column(
+                    children: <Widget>[
+                      new RichText(
+                          text: new TextSpan(text: '', children: [
+                        new TextSpan(
+                          text: 'Devo Title\n',
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 4.0,
+                            height: 1.5,
+                          ),
+                        ),
+                        new TextSpan(
+                            text: 'Authors Name\n',
+                            style: new TextStyle(
+                              color: Colors.white.withOpacity(0.65),
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 3.0,
+                              height: 1.5,
+                            ))
+                      ])),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 30.0, bottom: 50.0),
+                        child: new Row(
+                          children: <Widget>[
+                            new Expanded(child: new Container()),
+                            /*new IconButton(
+                              icon: new Icon(
+                                //previous button
+                                Icons.skip_previous,
+                                color: Colors.white,
+                                size: 50.0,
+                              ),
+                              onPressed: () {
+                                //todo
+                              },
+                            ),*/
+                            new Expanded(child: new Container()),
+                            new RawMaterialButton(
+                              shape: new CircleBorder(),
+                              fillColor: Colors.white,
+                              splashColor: lightAccentColor,
+                              highlightColor: lightAccentColor.withOpacity(0.5),
+                              elevation: 15.0,
+                              highlightElevation: 0.5,
+                             // onPressed: _isPlaying ? null:()=>_play(),
+                              onPressed: (){
+                                if  (_isPlaying )
+                                {
+                                  _pause();
+                                }
+                                else {
+                                  _play();}
+                              },
+                              child: new Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: new Icon(
+                                  //play  button
+                                  _isPlaying ? Icons.pause : Icons.play_arrow,
+                                 // Icons.play_arrow,
+                                  color: darkAccentColor,
+                                  size: 90,
+                                ),
+                              ),
+                            ),
+                            new Expanded(child: new Container()),
+                           /* new IconButton(
+                              icon: new Icon(
+                                //next button
+                                Icons.skip_next,
+                                color: Colors.white,
+                                size: 50.0,
+                              ),
+                              onPressed: () {
+                                //todo
+                              },
+                            ),*/
+                            new Expanded(child: new Container()),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )),
       ],
     );
   }
