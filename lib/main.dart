@@ -46,6 +46,14 @@ class _ExampleAppState extends State<ExampleApp> {
     return 'https://dzxuyknqkmi1e.cloudfront.net/odb/$fullYear/$month/odb-$month-$day-$year.mp3';
   }
 
+  ////  todo return the image URL
+    String generateImageUrl(DateTime picked) {
+    String month = twoDigit(picked.month.toString());
+    String day = twoDigit(picked.day.toString());
+    String year = twoDigit(picked.year.toString());
+    String fullYear = picked.year.toString();
+    return 'https://d626yq9e83zk1.cloudfront.net/files/$fullYear/$month/odb-$year-$month-$day.jpg';
+  }
   // function to return 2 digits month or day
   String twoDigit(String temp) {
     if (temp.length==1) {
@@ -87,9 +95,10 @@ class _ExampleAppState extends State<ExampleApp> {
   Widget _tab(List<Widget> children) {
     return Center(
       child: Container(
-        padding: EdgeInsets.all(16.0),
+        width: double.infinity,
+       // padding: EdgeInsets.all(16.0),
         child: Column(
-          children: children.map((w) => Container(child: w, padding: EdgeInsets.all(6.0))).toList(),
+          children: children.map((w) => Container(child: w, padding: EdgeInsets.all(0.0))).toList(),
         ),
       ),
     );
@@ -143,7 +152,7 @@ class _ExampleAppState extends State<ExampleApp> {
         appBar: AppBar(
           backgroundColor: const Color(0xFFFAB431),
           elevation: 0.0,
-          title: new Center(child: new Text("Our Daily Bread  |  Drive"),),
+          title: new Center(child: new Text("Our Daily Drive"),),
           leading: new IconButton(
             //menu back button
           icon:new Icon(
@@ -164,14 +173,15 @@ class _ExampleAppState extends State<ExampleApp> {
             ],
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Remote File'),
-              Tab(text: 'Download File'),
+              Tab(text: 'Streaming Audio'),
+              Tab(text: 'Downloaded Audio'),
             ],
           ),
 
         ),
         body: TabBarView(
           children: [remoteUrl(), localFile()],
+          
         ),
 
       ),

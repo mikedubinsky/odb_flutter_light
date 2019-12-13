@@ -1,4 +1,4 @@
-// TODO Implement this library.
+// colors etc.. for the app.
 import 'package:flutter/material.dart';
 
 const Color accentColor = const Color(0xFFFAB431);

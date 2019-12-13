@@ -69,14 +69,12 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     return new Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
+
                    
-        new Row(
+        /*new Row(
           mainAxisSize: MainAxisSize.min,
           children: [
                     // Display the correct icon depending on the state of the player.
-        //Icon(
-          //_controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        //),
             new IconButton(
                 onPressed: _isPlaying ? null : () => _play(),
                 iconSize: 64.0,
@@ -126,13 +124,58 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           ],
         ),
         new Text("State: $_audioPlayerState"),
-         //song title, artist name and controls
+        new Text("URL Playing: $url"),*////////////////////
+
+        new Container(
+          color: Colors.tealAccent,
+          width: double.infinity, 
+          height: 300.0,
+          child: Image.network(
+              'https://d626yq9e83zk1.cloudfront.net/files/2019/12/odb20191212.jpg',
+            fit: BoxFit.fitHeight,
+          ),
+          //Text("URL Playing: $url"),
+          ),
+
+
+         //progress indicator, song title, artist name and controls
             new Container(
                 color: accentColor,
+
                 child: new Padding(
-                  padding: const EdgeInsets.only(top: 40.0, bottom: 160.0),
+                  padding: const EdgeInsets.all(0.0),
                   child: new Column(
                     children: <Widget>[
+                ////progress indicator
+                ///////todo add a circle to the progress
+              new SizedBox(
+                height: 5.0,
+                width: 500.0,
+                child: new LinearProgressIndicator(
+                    value: (_position != null &&
+                        _duration != null &&
+                        _position.inMilliseconds > 0 &&
+                        _position.inMilliseconds < _duration.inMilliseconds)
+                        ? _position.inMilliseconds / _duration.inMilliseconds
+                        : 0.0,
+                    valueColor: new AlwaysStoppedAnimation(Colors.cyan),
+                    
+                  ),
+              ),
+                Align(child: Text( _position != null
+                  ? '${_positionText ?? ''} / ${_durationText ?? ''}'
+                  : _duration != null ? _durationText : '',
+              style: new TextStyle(
+                color: Colors.white.withOpacity(0.95),
+                fontSize: 20.0),), 
+                alignment: Alignment.topCenter,), 
+
+            /*new Text(
+              _position != null
+                  ? '${_positionText ?? ''} / ${_durationText ?? ''}'
+                  : _duration != null ? _durationText : '',
+              style: new TextStyle(fontSize: 24.0),
+            ),*/
                       new RichText(
                           text: new TextSpan(text: '', children: [
                         new TextSpan(
@@ -156,22 +199,30 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             ))
                       ])),
                       Padding(
-                        padding: const EdgeInsets.only(top: 30.0, bottom: 50.0),
+                        padding: const EdgeInsets.only(top: 30.0, bottom: 150.0),
                         child: new Row(
-                          children: <Widget>[
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            
+                            /////todo 10 sec rewind...expanded container add padding
+                            /////todo find a better way formatting the player controls
                             new Expanded(child: new Container()),
-                            /*new IconButton(
+                            new Expanded(child: new Container()),
+                            new Expanded(child: new Container()),
+                            new IconButton(
                               icon: new Icon(
                                 //previous button
-                                Icons.skip_previous,
+                                Icons.replay_10,
                                 color: Colors.white,
                                 size: 50.0,
                               ),
                               onPressed: () {
                                 //todo
                               },
-                            ),*/
+                            ),
                             new Expanded(child: new Container()),
+                            
+                             ///play button
                             new RawMaterialButton(
                               shape: new CircleBorder(),
                               fillColor: Colors.white,
@@ -179,7 +230,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                               highlightColor: lightAccentColor.withOpacity(0.5),
                               elevation: 15.0,
                               highlightElevation: 0.5,
-                             // onPressed: _isPlaying ? null:()=>_play(),
                               onPressed: (){
                                 if  (_isPlaying )
                                 {
@@ -191,33 +241,54 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                               child: new Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: new Icon(
-                                  //play  button
                                   _isPlaying ? Icons.pause : Icons.play_arrow,
-                                 // Icons.play_arrow,
                                   color: darkAccentColor,
                                   size: 90,
                                 ),
                               ),
                             ),
+        
+                          /////todo 10 sec forward              
                             new Expanded(child: new Container()),
-                           /* new IconButton(
+
+                            
+                            new IconButton(
                               icon: new Icon(
-                                //next button
-                                Icons.skip_next,
+                                //previous button
+                                Icons.forward_10,
                                 color: Colors.white,
                                 size: 50.0,
                               ),
                               onPressed: () {
                                 //todo
                               },
-                            ),*/
+                            ),
                             new Expanded(child: new Container()),
+                            new Expanded(child: new Container()),
+                            Container(),
+                            new IconButton(
+                onPressed: _isPlaying || _isPaused ? () => _stop() : null,
+                iconSize: 64.0,
+
+                icon: new Icon(Icons.stop),
+                color: Colors.cyan),
                           ],
                         ),
                       )
                     ],
                   ),
                 )),
+                       /* new Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+                    // Stop the player.
+            new IconButton(
+                onPressed: _isPlaying || _isPaused ? () => _stop() : null,
+                iconSize: 64.0,
+                icon: new Icon(Icons.stop),
+                color: Colors.cyan),
+          ],
+        ),*/
       ],
     );
   }
