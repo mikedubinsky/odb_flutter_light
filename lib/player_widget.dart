@@ -3,27 +3,32 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:odb_flutter_light/theme.dart';
 
 enum PlayerState { stopped, playing, paused }
 
 class PlayerWidget extends StatefulWidget {
   final String url;
+  final String imgUrl;
   final bool isLocal;
   final PlayerMode mode;
 
-  PlayerWidget(
-      {@required this.url,
-        this.isLocal = false,
-        this.mode = PlayerMode.MEDIA_PLAYER});
+  PlayerWidget({
+    @required this.url,
+    @required this.imgUrl,
+    this.isLocal = false,
+    this.mode = PlayerMode.MEDIA_PLAYER,
+  });
 
   @override
   State<StatefulWidget> createState() {
-    return new _PlayerWidgetState(url, isLocal, mode);
+    return new _PlayerWidgetState(url, imgUrl, isLocal, mode);
   }
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
-  String url;
+  String stateUrl;
+  String imageUrl;
   bool isLocal;
   PlayerMode mode;
 
@@ -44,12 +49,21 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   get _durationText => _duration?.toString()?.split('.')?.first ?? '';
   get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
-  _PlayerWidgetState(this.url, this.isLocal, this.mode);
+  _PlayerWidgetState(this.stateUrl, this.imageUrl, this.isLocal, this.mode);
 
   @override
   void initState() {
     super.initState();
     _initAudioPlayer();
+  }
+
+  @override
+  void didUpdateWidget(Widget oldWidget) {
+    setState(() {
+      stateUrl = widget.url;
+      imageUrl = widget.imgUrl;
+    });
+    _audioPlayer.setUrl(widget.url);
   }
 
   @override
@@ -68,82 +82,172 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     return new Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        new Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            new IconButton(
-                onPressed: _isPlaying ? null : () => _play(),
-                iconSize: 64.0,
-                icon: new Icon(Icons.play_arrow),
-                color: Colors.cyan),
-            new IconButton(
-                onPressed: _isPlaying ? () => _pause() : null,
-                iconSize: 64.0,
-                icon: new Icon(Icons.pause),
-                color: Colors.cyan),
-            new IconButton(
-                onPressed: _isPlaying || _isPaused ? () => _stop() : null,
-                iconSize: 64.0,
-                icon: new Icon(Icons.stop),
-                color: Colors.cyan),
-          ],
+        new Container(
+          color: Colors.tealAccent,
+          width: double.infinity,
+          height: 300.0,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.fitHeight,
+          ),
         ),
-        new Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            new Padding(
-              padding: new EdgeInsets.all(12.0),
-              child: new Stack(
-                children: [
-                  new CircularProgressIndicator(
-                    value: 1.0,
-                    valueColor: new AlwaysStoppedAnimation(Colors.grey[300]),
+
+        //progress indicator, song title, artist name and controls
+        new Container(
+            color: accentColor,
+            child: new Padding(
+              padding: const EdgeInsets.all(0.0),
+              child: new Column(
+                children: <Widget>[
+                  ////progress indicator
+                  ///////todo add a circle to the progress
+                  new SizedBox(
+                    height: 5.0,
+                    width: 500.0,
+                    child: new LinearProgressIndicator(
+                      value: (_position != null &&
+                              _duration != null &&
+                              _position.inMilliseconds > 0 &&
+                              _position.inMilliseconds <
+                                  _duration.inMilliseconds)
+                          ? _position.inMilliseconds / _duration.inMilliseconds
+                          : 0.0,
+                      valueColor: new AlwaysStoppedAnimation(Colors.cyan),
+                    ),
                   ),
-                  new CircularProgressIndicator(
-                    value: (_position != null &&
-                        _duration != null &&
-                        _position.inMilliseconds > 0 &&
-                        _position.inMilliseconds < _duration.inMilliseconds)
-                        ? _position.inMilliseconds / _duration.inMilliseconds
-                        : 0.0,
-                    valueColor: new AlwaysStoppedAnimation(Colors.cyan),
+                  Align(
+                    child: Text(
+                      _position != null
+                          ? '${_positionText ?? ''} / ${_durationText ?? ''}'
+                          : _duration != null ? _durationText : '',
+                      style: new TextStyle(
+                          color: Colors.white.withOpacity(0.95),
+                          fontSize: 20.0),
+                    ),
+                    alignment: Alignment.topCenter,
                   ),
+
+                  new RichText(
+                      text: new TextSpan(text: '', children: [
+                    new TextSpan(
+                      text: 'Devo Title\n',
+                      style: new TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 4.0,
+                        height: 1.5,
+                      ),
+                    ),
+                    new TextSpan(
+                        text: 'Authors Name\n',
+                        style: new TextStyle(
+                          color: Colors.white.withOpacity(0.65),
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 3.0,
+                          height: 1.5,
+                        ))
+                  ])),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30.0, bottom: 150.0),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        /////todo 10 sec rewind...expanded container add padding
+                        /////todo find a better way formatting the player controls
+                        new Expanded(child: new Container()),
+                        new Expanded(child: new Container()),
+                        new Expanded(child: new Container()),
+                        new IconButton(
+                          icon: new Icon(
+                            Icons.replay_10,
+                            color: Colors.white,
+                            size: 50.0,
+                          ),
+                          onPressed: () {
+                            //todo previous button
+                          },
+                        ),
+                        new Expanded(child: new Container()),
+
+                        ///play button
+                        new RawMaterialButton(
+                          shape: new CircleBorder(),
+                          fillColor: Colors.white,
+                          splashColor: lightAccentColor,
+                          highlightColor: lightAccentColor.withOpacity(0.5),
+                          elevation: 15.0,
+                          highlightElevation: 0.5,
+                          onPressed: () {
+                            if (_isPlaying) {
+                              _pause();
+                            } else {
+                              _play();
+                            }
+                          },
+                          child: new Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: new Icon(
+                              _isPlaying ? Icons.pause : Icons.play_arrow,
+                              color: darkAccentColor,
+                              size: 90,
+                            ),
+                          ),
+                        ),
+
+                        /////todo 10 sec forward
+                        new Expanded(child: new Container()),
+                        new IconButton(
+                          icon: new Icon(
+                            //previous button
+                            Icons.forward_10,
+                            color: Colors.white,
+                            size: 50.0,
+                          ),
+                          onPressed: () {
+                            //todo
+                          },
+                        ),
+                        new Expanded(child: new Container()),
+                        new Expanded(child: new Container()),
+                        Container(),
+                        new IconButton(
+                            onPressed:
+                                _isPlaying || _isPaused ? () => _stop() : null,
+                            iconSize: 64.0,
+                            icon: new Icon(Icons.stop),
+                            color: Colors.cyan),
+                      ],
+                    ),
+                  )
                 ],
               ),
-            ),
-            new Text(
-              _position != null
-                  ? '${_positionText ?? ''} / ${_durationText ?? ''}'
-                  : _duration != null ? _durationText : '',
-              style: new TextStyle(fontSize: 24.0),
-            ),
-          ],
-        ),
-        new Text("State: $_audioPlayerState")
+            )),
       ],
     );
   }
 
   void _initAudioPlayer() {
-    _audioPlayer = AudioPlayer(mode: mode);
+    _audioPlayer = AudioPlayer(playerId: 'odb_light', mode: mode); // playerId can be removed to allow multiple audio players
 
     _durationSubscription =
         _audioPlayer.onDurationChanged.listen((duration) => setState(() {
-          _duration = duration;
-        }));
+              _duration = duration;
+            }));
 
     _positionSubscription =
         _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
-          _position = p;
-        }));
+              _position = p;
+            }));
 
     _playerCompleteSubscription =
         _audioPlayer.onPlayerCompletion.listen((event) {
-          _onComplete();
-          setState(() {
-            _position = _duration;
-          });
-        });
+      _onComplete();
+      setState(() {
+        _position = _duration;
+      });
+    });
 
     _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
       print('audioPlayer error : $msg');
@@ -164,13 +268,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   Future<int> _play() async {
     final playPosition = (_position != null &&
-        _duration != null &&
-        _position.inMilliseconds > 0 &&
-        _position.inMilliseconds < _duration.inMilliseconds)
+            _duration != null &&
+            _position.inMilliseconds > 0 &&
+            _position.inMilliseconds < _duration.inMilliseconds)
         ? _position
         : null;
-    final result =
-    await _audioPlayer.play(url, isLocal: isLocal, position: playPosition);
+    final result = await _audioPlayer.play(stateUrl,
+        isLocal: isLocal, position: playPosition);
     if (result == 1) setState(() => _playerState = PlayerState.playing);
     return result;
   }
