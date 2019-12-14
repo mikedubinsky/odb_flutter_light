@@ -9,23 +9,26 @@ enum PlayerState { stopped, playing, paused }
 
 class PlayerWidget extends StatefulWidget {
   final String url;
+  final String imgUrl;
   final bool isLocal;
   final PlayerMode mode;
 
   PlayerWidget({
     @required this.url,
+    @required this.imgUrl,
     this.isLocal = false,
     this.mode = PlayerMode.MEDIA_PLAYER,
   });
 
   @override
   State<StatefulWidget> createState() {
-    return new _PlayerWidgetState(url, isLocal, mode);
+    return new _PlayerWidgetState(url, imgUrl, isLocal, mode);
   }
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
   String stateUrl;
+  String imageUrl;
   bool isLocal;
   PlayerMode mode;
 
@@ -46,7 +49,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   get _durationText => _duration?.toString()?.split('.')?.first ?? '';
   get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
-  _PlayerWidgetState(this.stateUrl, this.isLocal, this.mode);
+  _PlayerWidgetState(this.stateUrl, this.imageUrl, this.isLocal, this.mode);
 
   @override
   void initState() {
@@ -58,6 +61,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   void didUpdateWidget(Widget oldWidget) {
     setState(() {
       stateUrl = widget.url;
+      imageUrl = widget.imgUrl;
     });
     _audioPlayer.setUrl(widget.url);
   }
@@ -83,7 +87,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           width: double.infinity,
           height: 300.0,
           child: Image.network(
-            'https://d626yq9e83zk1.cloudfront.net/files/2019/12/odb20191212.jpg', // TODO
+            imageUrl,
             fit: BoxFit.fitHeight,
           ),
         ),

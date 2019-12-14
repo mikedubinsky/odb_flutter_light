@@ -29,7 +29,8 @@ class _ExampleAppState extends State<ExampleApp> {
   String localFilePath = '';
   final dateFormat = DateFormat("MMMM-dd-yyyy");
   DateTime selectedDate = DateTime.now();
-  String audioUrl = 'https://dzxuyknqkmi1e.cloudfront.net/odb/2019/12/odb-12-13-19.mp3';
+  var audioUrl = 'https://dzxuyknqkmi1e.cloudfront.net/odb/2019/12/odb-12-13-19.mp3';
+  var imageUrl = 'https://d626yq9e83zk1.cloudfront.net/files/2019/12/odb20191212.jpg';
 
   // function to return the audio URL
   String generateAudioUrl(DateTime picked) {
@@ -45,9 +46,9 @@ class _ExampleAppState extends State<ExampleApp> {
   String generateImageUrl(DateTime picked) {
     String month = twoDigit(picked.month.toString());
     String day = twoDigit(picked.day.toString());
-    String year = twoDigit(picked.year.toString());
+    String year = picked.year.toString();
     String fullYear = picked.year.toString();
-    return 'https://d626yq9e83zk1.cloudfront.net/files/$fullYear/$month/odb-$year-$month-$day.jpg';
+    return 'https://d626yq9e83zk1.cloudfront.net/files/$fullYear/$month/odb$year$month$day.jpg';
   }
   
   // function to return 2 digits month or day
@@ -73,6 +74,7 @@ class _ExampleAppState extends State<ExampleApp> {
       setState(() {
         selectedDate = picked;
         audioUrl = generateAudioUrl(picked);
+        imageUrl = generateImageUrl(picked);
       });
     }
   }
@@ -129,7 +131,7 @@ class _ExampleAppState extends State<ExampleApp> {
             "Audio URL: $audioUrl",
             style: TextStyle(fontWeight: FontWeight.bold)
         ),
-        new PlayerWidget(url: audioUrl),
+        new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
       ]),
     );
 
@@ -140,7 +142,7 @@ class _ExampleAppState extends State<ExampleApp> {
       Text('Audio URL: $kUrl1'),
       _btn('Download File', () => _loadFile()),
       Text('Current local file path: $localFilePath'),
-      localFilePath == null ? Container() : PlayerWidget(url: localFilePath, isLocal: true),
+      localFilePath == null ? Container() : PlayerWidget(url: localFilePath, imgUrl: imageUrl, isLocal: true),
     ]);
   }
 
