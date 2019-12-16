@@ -85,7 +85,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         new Container(
           color: Colors.tealAccent,
           width: double.infinity,
-          height: 300.0,
+          height: 330.0,
           child: Image.network(
             imageUrl,
             fit: BoxFit.fitHeight,
@@ -101,7 +101,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                 children: <Widget>[
                   ////progress indicator
                   ///////todo add a circle to the progress
-                  new SizedBox(
+                  /*new SizedBox(
                     height: 9.0,
                     width: double.infinity,
                     child: new LinearProgressIndicator(
@@ -114,7 +114,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           : 0.0,
                       valueColor: new AlwaysStoppedAnimation(Colors.cyan),
                     ),
-                  ),
+                  ),*/
                   Align(
                     child: Text(
                       _position != null
@@ -150,8 +150,25 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         ))
                   ])),
                   
+                  ////progress indicator
+                  ///////todo add a circle to the progress
+                  new FractionallySizedBox(
+                    //height: 9.0,
+                    widthFactor: 0.9,
+                    child: new LinearProgressIndicator(
+                      value: (_position != null &&
+                              _duration != null &&
+                              _position.inMilliseconds > 0 &&
+                              _position.inMilliseconds <
+                                  _duration.inMilliseconds)
+                          ? _position.inMilliseconds / _duration.inMilliseconds
+                          : 0.0,
+                      valueColor: new AlwaysStoppedAnimation(Colors.cyan),
+                    ),
+                  ),
+
                   Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 30.0, right: 20.0, bottom: 20.0),
+                    padding: const EdgeInsets.only(left: 0.0, top: 30.0, right: 20.0, bottom: 0.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -239,7 +256,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                     ),
                   ),
                   Padding(
-                     padding: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+                     padding: const EdgeInsets.only(top: 0.0, bottom: 30.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

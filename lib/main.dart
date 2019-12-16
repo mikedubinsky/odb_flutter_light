@@ -68,7 +68,19 @@ class _ExampleAppState extends State<ExampleApp> {
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(2010),
-        lastDate: DateTime(2030));
+        lastDate: DateTime(2030),
+         builder: (BuildContext context, Widget child) {
+    return Theme(
+      data: ThemeData(
+            brightness: Brightness.light,
+    primaryColor: const Color(0xFFFAB431),
+    accentColor: Colors.cyan[600],
+      ),
+      child: child,
+    );
+  },);
+
+
 
     if (picked != null && picked != selectedDate) {
       setState(() {
@@ -95,6 +107,7 @@ class _ExampleAppState extends State<ExampleApp> {
   Widget _tab(List<Widget> children) {
     return Center(
       child: Container(
+        color: const Color(0xFFFAB431),
         width: double.infinity,
        // padding: EdgeInsets.all(16.0),
         child: Column(
@@ -123,7 +136,8 @@ class _ExampleAppState extends State<ExampleApp> {
          new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
 
          //select date widget area
-          SizedBox(height: 20.0,),
+          //SizedBox(height: 20.0,),
+          
           RaisedButton(
             onPressed: () => _selectDate(context),
             child: Text('Select date'),
@@ -176,7 +190,7 @@ class _ExampleAppState extends State<ExampleApp> {
               icon:new Icon(
               Icons.menu,
             ),
-                      color: const Color (0xFFDDDDDD),
+          color: const Color (0xFFDDDDDD),
           onPressed: (){},
             )
             ],
