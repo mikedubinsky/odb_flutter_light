@@ -102,8 +102,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                   ////progress indicator
                   ///////todo add a circle to the progress
                   new SizedBox(
-                    height: 5.0,
-                    width: 500.0,
+                    height: 9.0,
+                    width: double.infinity,
                     child: new LinearProgressIndicator(
                       value: (_position != null &&
                               _duration != null &&
@@ -150,15 +150,26 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         ))
                   ])),
                   Padding(
-                    padding: const EdgeInsets.only(top: 30.0, bottom: 150.0),
+                    padding: const EdgeInsets.only(left: 0.0, top: 30.0, right: 20.0, bottom: 20.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         /////todo 10 sec rewind...expanded container add padding
                         /////todo find a better way formatting the player controls
-                        new Expanded(child: new Container()),
-                        new Expanded(child: new Container()),
-                        new Expanded(child: new Container()),
+                       ////// new Expanded(child: new Container()),
+                        //////new Expanded(child: new Container()),
+                        new IconButton(
+                          icon: new Icon(
+                            Icons.skip_previous,
+                            color: Colors.white,
+                            size: 50.0,
+                          ),
+                          onPressed: () {
+                            //todo next button
+                          },
+                        ),
+                        SizedBox(width: 10.0,),
+                        //new Expanded(child: new Container()),
                         new IconButton(
                           icon: new Icon(
                             Icons.replay_10,
@@ -166,10 +177,11 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             size: 50.0,
                           ),
                           onPressed: () {
-                            //todo previous button
+                            //todo previous day button
                           },
                         ),
-                        new Expanded(child: new Container()),
+                        SizedBox(width: 20.0,),
+                        ////////new Expanded(child: new Container()),
 
                         ///play button
                         new RawMaterialButton(
@@ -195,9 +207,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             ),
                           ),
                         ),
-
+                        SizedBox(width: 0.0,),
                         /////todo 10 sec forward
-                        new Expanded(child: new Container()),
                         new IconButton(
                           icon: new Icon(
                             //previous button
@@ -209,18 +220,40 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             //todo
                           },
                         ),
-                        new Expanded(child: new Container()),
-                        new Expanded(child: new Container()),
-                        Container(),
+                        SizedBox(width: 10.0,),
                         new IconButton(
-                            onPressed:
-                                _isPlaying || _isPaused ? () => _stop() : null,
-                            iconSize: 64.0,
-                            icon: new Icon(Icons.stop),
-                            color: Colors.cyan),
+                          icon: new Icon(
+                            Icons.skip_next,
+                            color: Colors.white,
+                            size: 50.0,
+                          ),
+                          onPressed: () {
+                            //todo next day button
+                          },
+                        ),
+                       ////////////// new Expanded(child: new Container()),
+                       ////////////// new Expanded(child: new Container()),
+                        
                       ],
                     ),
-                  )
+                  ),
+                  Padding(
+                     padding: const EdgeInsets.only(top: 0.0, bottom: 100.0),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                          new Container(
+                          child: IconButton(
+                              onPressed: _isPlaying || _isPaused
+                                  ? () => _stop()
+                                  : null,
+                              iconSize: 64.0,
+                              icon: new Icon(Icons.stop),
+                              color: Colors.cyan),
+                        ),
+                      ]
+                    ),
+                  ),
                 ],
               ),
             )),
@@ -229,7 +262,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   }
 
   void _initAudioPlayer() {
-    _audioPlayer = AudioPlayer(playerId: 'odb_light', mode: mode); // playerId can be removed to allow multiple audio players
+    _audioPlayer = AudioPlayer(
+        playerId: 'odb_light',
+        mode: mode); // playerId can be removed to allow multiple audio players
 
     _durationSubscription =
         _audioPlayer.onDurationChanged.listen((duration) => setState(() {
