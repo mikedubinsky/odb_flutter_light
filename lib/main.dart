@@ -118,6 +118,7 @@ class _ExampleAppState extends State<ExampleApp> {
     return SingleChildScrollView(
 
       child: _tab([
+         new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
           SizedBox(height: 20.0,),
           RaisedButton(
             onPressed: () => _selectDate(context),
@@ -127,11 +128,11 @@ class _ExampleAppState extends State<ExampleApp> {
             "${dateFormat.format(selectedDate.toLocal())}",
             style: TextStyle(fontWeight: FontWeight.bold)
         ),
-        Text(
+       /* Text(
             "Audio URL: $audioUrl",
             style: TextStyle(fontWeight: FontWeight.bold)
-        ),
-        new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
+        ),*/
+       // new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
       ]),
     );
 

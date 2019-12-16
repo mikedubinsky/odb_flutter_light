@@ -149,6 +149,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           height: 1.5,
                         ))
                   ])),
+                  
                   Padding(
                     padding: const EdgeInsets.only(left: 0.0, top: 30.0, right: 20.0, bottom: 20.0),
                     child: new Row(
@@ -238,7 +239,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                     ),
                   ),
                   Padding(
-                     padding: const EdgeInsets.only(top: 0.0, bottom: 100.0),
+                     padding: const EdgeInsets.only(top: 0.0, bottom: 10.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
