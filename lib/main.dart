@@ -118,7 +118,11 @@ class _ExampleAppState extends State<ExampleApp> {
     return SingleChildScrollView(
 
       child: _tab([
+        
+        //player widget
          new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
+
+         //select date widget area
           SizedBox(height: 20.0,),
           RaisedButton(
             onPressed: () => _selectDate(context),
@@ -140,10 +144,12 @@ class _ExampleAppState extends State<ExampleApp> {
 
   Widget localFile() {
     return _tab([
-      Text('Audio URL: $kUrl1'),
-      _btn('Download File', () => _loadFile()),
-      Text('Current local file path: $localFilePath'),
+      //Text('Audio URL: $kUrl1'),
+     // _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
       localFilePath == null ? Container() : PlayerWidget(url: localFilePath, imgUrl: imageUrl, isLocal: true),
+     _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
     ]);
   }
 
