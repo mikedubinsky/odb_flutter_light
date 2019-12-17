@@ -171,7 +171,7 @@ class _ExampleAppState extends State<ExampleApp> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFFAB431),
@@ -197,14 +197,15 @@ class _ExampleAppState extends State<ExampleApp> {
             ],
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Streaming Audio'),
-              Tab(text: 'Downloaded Audio'),
+              Tab(text: 'Stream Audio'),
+              Tab(text: 'Download Audio'),
+              Tab(icon: Icon(Icons.monetization_on)),
             ],
           ),
 
         ),
         body: TabBarView(
-          children: [remoteUrl(), localFile()],
+          children: [remoteUrl(), localFile(), localFile()], 
           
         ),
 

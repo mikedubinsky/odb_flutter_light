@@ -85,7 +85,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         new Container(
           color: Colors.tealAccent,
           width: double.infinity,
-          height: 320.0,
+          height: 330.0,
           child: Image.network(
             imageUrl,
             fit: BoxFit.fitHeight,
