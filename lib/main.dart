@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
+//import 'package:animated_splash/animated_splash.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
@@ -42,7 +42,7 @@ class _ExampleAppState extends State<ExampleApp> {
     return 'https://dzxuyknqkmi1e.cloudfront.net/odb/$fullYear/$month/odb-$month-$day-$year.mp3';
   }
 
-  ////  todo return the image URL
+  ////  return the image URL
   String generateImageUrl(DateTime picked) {
     String month = twoDigit(picked.month.toString());
     String day = twoDigit(picked.day.toString());
@@ -109,6 +109,7 @@ class _ExampleAppState extends State<ExampleApp> {
       child: Container(
         color: const Color(0xFFFAB431),
         width: double.infinity,
+        height: 800,
        // padding: EdgeInsets.all(16.0),
         child: Column(
           children: children.map((w) => Container(child: w, padding: EdgeInsets.all(0.0))).toList(),
