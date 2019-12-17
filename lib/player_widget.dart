@@ -91,19 +91,11 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             fit: BoxFit.fitHeight,
           ),
         ),
-
-        //progress indicator, song title, artist name and controls
-        new Container(
-            color: accentColor,
-            child: new Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: new Column(
-                children: <Widget>[
                   ////progress indicator
                   ///////todo add a circle to the progress
-                  /*new SizedBox(
-                    height: 9.0,
-                    width: double.infinity,
+                  new FractionallySizedBox(
+                    //height: 9.0,
+                    widthFactor: 1,
                     child: new LinearProgressIndicator(
                       value: (_position != null &&
                               _duration != null &&
@@ -114,26 +106,23 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           : 0.0,
                       valueColor: new AlwaysStoppedAnimation(Colors.cyan),
                     ),
-                  ),*/
-                  Align(
-                    child: Text(
-                      _position != null
-                          ? '${_positionText ?? ''} / ${_durationText ?? ''}'
-                          : _duration != null ? _durationText : '',
-                      style: new TextStyle(
-                          color: Colors.white.withOpacity(0.95),
-                          fontSize: 20.0),
-                    ),
-                    alignment: Alignment.topCenter,
                   ),
-
+        //progress indicator, song title, artist name and controls
+        new Container(
+            color: accentColor,
+            child: new Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: new Column(
+                children: <Widget>[
+                  
+                  ////devo info
                   new RichText(
                       text: new TextSpan(text: '', children: [
                     new TextSpan(
                       text: 'Devo Title\n',
                       style: new TextStyle(
                         color: Colors.white,
-                        fontSize: 14.0,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 4.0,
                         height: 1.5,
@@ -150,9 +139,21 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         ))
                   ])),
                   
+                  /////duration info
+                   Align(
+                    child: Text(
+                      _position != null
+                          ? '${_positionText ?? ''} / ${_durationText ?? ''}'
+                          : _duration != null ? _durationText : '',
+                      style: new TextStyle(
+                          color: Colors.white.withOpacity(0.95),
+                          fontSize: 20.0),
+                    ),
+                    alignment: Alignment.topCenter,
+                  ),
                   ////progress indicator
                   ///////todo add a circle to the progress
-                  new FractionallySizedBox(
+                  /*new FractionallySizedBox(
                     //height: 9.0,
                     widthFactor: 0.9,
                     child: new LinearProgressIndicator(
@@ -165,16 +166,34 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           : 0.0,
                       valueColor: new AlwaysStoppedAnimation(Colors.cyan),
                     ),
-                  ),
+                  ),*/
 
+
+              ////slider
+              Padding(
+              padding: EdgeInsets.all(0.0),
+              child: Stack(
+                children: [
+                  Slider(
+                    onChanged: (v) {
+                      final Position = v * _duration.inMilliseconds;
+                      _audioPlayer
+                          .seek(Duration(milliseconds: Position.round()));
+                    },
+                    value: (_position != null &&
+                            _duration != null &&
+                            _position.inMilliseconds > 0 &&
+                            _position.inMilliseconds < _duration.inMilliseconds)
+                        ? _position.inMilliseconds / _duration.inMilliseconds
+                        : 0.0,
+                  ),])),
+
+                  ///////todo find a better way formatting the player controls
                   Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 30.0, right: 20.0, bottom: 0.0),
+                    padding: const EdgeInsets.only(left: 0.0, top: 5.0, right: 20.0, bottom: 0.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        /////todo 10 sec rewind...expanded container add padding
-                        /////todo find a better way formatting the player controls
-                       ////// new Expanded(child: new Container()),
                         //////new Expanded(child: new Container()),
                         
                         //////go to previous day
