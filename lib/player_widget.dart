@@ -176,6 +176,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         /////todo find a better way formatting the player controls
                        ////// new Expanded(child: new Container()),
                         //////new Expanded(child: new Container()),
+                        
+                        //////go to previous day
                         new IconButton(
                           icon: new Icon(
                             Icons.skip_previous,
@@ -188,20 +190,23 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         ),
                         SizedBox(width: 10.0,),
                         //new Expanded(child: new Container()),
+
+                        ////rewind 10 secs
                         new IconButton(
                           icon: new Icon(
                             Icons.replay_10,
                             color: Colors.white,
                             size: 50.0,
                           ),
-                          onPressed: () {
-                            //todo previous day button
-                          },
+                          onPressed: 
+                          _isPlaying || _isPaused ? () => _seek(adjust: -10) : null , 
+
+                          
                         ),
                         SizedBox(width: 20.0,),
                         ////////new Expanded(child: new Container()),
 
-                        ///play button
+                        ///play audio button
                         new RawMaterialButton(
                           shape: new CircleBorder(),
                           fillColor: Colors.white,
@@ -226,19 +231,20 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           ),
                         ),
                         SizedBox(width: 0.0,),
-                        /////todo 10 sec forward
+                        
+                        ///////fforward 10 secs 
                         new IconButton(
                           icon: new Icon(
-                            //previous button
                             Icons.forward_10,
                             color: Colors.white,
                             size: 50.0,
                           ),
-                          onPressed: () {
-                            //todo
-                          },
+                          onPressed: 
+                          _isPlaying || _isPaused ? () => _seek(adjust: 10) : null , 
                         ),
                         SizedBox(width: 10.0,),
+                        
+                        //////go to next day
                         new IconButton(
                           icon: new Icon(
                             Icons.skip_next,
@@ -255,8 +261,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                       ],
                     ),
                   ),
+                  
+                  ////temporary stop button, remove this
                   Padding(
-                     padding: const EdgeInsets.only(top: 0.0, bottom: 30.0),
+                     padding: const EdgeInsets.only(top: 0.0, bottom: 0.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -347,6 +355,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       });
     }
     return result;
+  }
+
+  Future<int> _seek({adjust = 10}) async {
+        final _newPosition = _position.inSeconds + adjust;
+        final result = await _audioPlayer.play(stateUrl,
+        isLocal: isLocal, position: Duration(seconds: _newPosition));
+        return result;
   }
 
   void _onComplete() {
