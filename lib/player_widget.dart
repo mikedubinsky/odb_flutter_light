@@ -85,14 +85,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         new Container(
           color: Colors.tealAccent,
           width: double.infinity,
-          height: 330.0,
+          height: 320.0,
           child: Image.network(
             imageUrl,
             fit: BoxFit.fitHeight,
           ),
         ),
                   ////progress indicator
-                  ///////todo add a circle to the progress
                   new FractionallySizedBox(
                     //height: 9.0,
                     widthFactor: 1,
