@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
+//import 'package:animated_splash/animated_splash.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
@@ -42,7 +42,7 @@ class _ExampleAppState extends State<ExampleApp> {
     return 'https://dzxuyknqkmi1e.cloudfront.net/odb/$fullYear/$month/odb-$month-$day-$year.mp3';
   }
 
-  ////  todo return the image URL
+  ////  return the image URL
   String generateImageUrl(DateTime picked) {
     String month = twoDigit(picked.month.toString());
     String day = twoDigit(picked.day.toString());
@@ -68,7 +68,19 @@ class _ExampleAppState extends State<ExampleApp> {
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(2010),
-        lastDate: DateTime(2030));
+        lastDate: DateTime(2030),
+         builder: (BuildContext context, Widget child) {
+    return Theme(
+      data: ThemeData(
+            brightness: Brightness.light,
+    primaryColor: const Color(0xFFFAB431),
+    accentColor: Colors.cyan[600],
+      ),
+      child: child,
+    );
+  },);
+
+
 
     if (picked != null && picked != selectedDate) {
       setState(() {
@@ -95,7 +107,9 @@ class _ExampleAppState extends State<ExampleApp> {
   Widget _tab(List<Widget> children) {
     return Center(
       child: Container(
+        color: const Color(0xFFFAB431),
         width: double.infinity,
+        height: 800,
        // padding: EdgeInsets.all(16.0),
         child: Column(
           children: children.map((w) => Container(child: w, padding: EdgeInsets.all(0.0))).toList(),
@@ -118,7 +132,13 @@ class _ExampleAppState extends State<ExampleApp> {
     return SingleChildScrollView(
 
       child: _tab([
-          SizedBox(height: 20.0,),
+        
+        //player widget
+         new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
+
+         //select date widget area
+          //SizedBox(height: 20.0,),
+          
           RaisedButton(
             onPressed: () => _selectDate(context),
             child: Text('Select date'),
@@ -127,11 +147,11 @@ class _ExampleAppState extends State<ExampleApp> {
             "${dateFormat.format(selectedDate.toLocal())}",
             style: TextStyle(fontWeight: FontWeight.bold)
         ),
-        Text(
+       /* Text(
             "Audio URL: $audioUrl",
             style: TextStyle(fontWeight: FontWeight.bold)
-        ),
-        new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
+        ),*/
+       // new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
       ]),
     );
 
@@ -139,17 +159,19 @@ class _ExampleAppState extends State<ExampleApp> {
 
   Widget localFile() {
     return _tab([
-      Text('Audio URL: $kUrl1'),
-      _btn('Download File', () => _loadFile()),
-      Text('Current local file path: $localFilePath'),
+      //Text('Audio URL: $kUrl1'),
+     // _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
       localFilePath == null ? Container() : PlayerWidget(url: localFilePath, imgUrl: imageUrl, isLocal: true),
+     _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFFAB431),
@@ -169,20 +191,21 @@ class _ExampleAppState extends State<ExampleApp> {
               icon:new Icon(
               Icons.menu,
             ),
-                      color: const Color (0xFFDDDDDD),
+          color: const Color (0xFFDDDDDD),
           onPressed: (){},
             )
             ],
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Streaming Audio'),
-              Tab(text: 'Downloaded Audio'),
+              Tab(text: 'Stream Audio'),
+              Tab(text: 'Download Audio'),
+              Tab(icon: Icon(Icons.monetization_on)),
             ],
           ),
 
         ),
         body: TabBarView(
-          children: [remoteUrl(), localFile()],
+          children: [remoteUrl(), localFile(), localFile()], 
           
         ),
 

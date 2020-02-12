@@ -85,25 +85,16 @@ class _PlayerWidgetState extends State<PlayerWidget> {
         new Container(
           color: Colors.tealAccent,
           width: double.infinity,
-          height: 300.0,
+          height: 330.0,
           child: Image.network(
             imageUrl,
             fit: BoxFit.fitHeight,
           ),
         ),
-
-        //progress indicator, song title, artist name and controls
-        new Container(
-            color: accentColor,
-            child: new Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: new Column(
-                children: <Widget>[
                   ////progress indicator
-                  ///////todo add a circle to the progress
-                  new SizedBox(
-                    height: 5.0,
-                    width: 500.0,
+                  new FractionallySizedBox(
+                    //height: 9.0,
+                    widthFactor: 1,
                     child: new LinearProgressIndicator(
                       value: (_position != null &&
                               _duration != null &&
@@ -115,25 +106,22 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                       valueColor: new AlwaysStoppedAnimation(Colors.cyan),
                     ),
                   ),
-                  Align(
-                    child: Text(
-                      _position != null
-                          ? '${_positionText ?? ''} / ${_durationText ?? ''}'
-                          : _duration != null ? _durationText : '',
-                      style: new TextStyle(
-                          color: Colors.white.withOpacity(0.95),
-                          fontSize: 20.0),
-                    ),
-                    alignment: Alignment.topCenter,
-                  ),
-
+        //progress indicator, song title, artist name and controls
+        new Container(
+            color: accentColor,
+            child: new Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: new Column(
+                children: <Widget>[
+                  
+                  ////devo info
                   new RichText(
                       text: new TextSpan(text: '', children: [
                     new TextSpan(
                       text: 'Devo Title\n',
                       style: new TextStyle(
                         color: Colors.white,
-                        fontSize: 14.0,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 4.0,
                         height: 1.5,
@@ -149,29 +137,94 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                           height: 1.5,
                         ))
                   ])),
+                  
+                  /////duration info
+                   Align(
+                    child: Text(
+                      _position != null
+                          ? '${_positionText ?? ''} / ${_durationText ?? ''}'
+                          : _duration != null ? _durationText : '',
+                      style: new TextStyle(
+                          color: Colors.white.withOpacity(0.95),
+                          fontSize: 20.0),
+                    ),
+                    alignment: Alignment.topCenter,
+                  ),
+                  ////progress indicator
+                  ///////todo add a circle to the progress
+                  /*new FractionallySizedBox(
+                    //height: 9.0,
+                    widthFactor: 0.9,
+                    child: new LinearProgressIndicator(
+                      value: (_position != null &&
+                              _duration != null &&
+                              _position.inMilliseconds > 0 &&
+                              _position.inMilliseconds <
+                                  _duration.inMilliseconds)
+                          ? _position.inMilliseconds / _duration.inMilliseconds
+                          : 0.0,
+                      valueColor: new AlwaysStoppedAnimation(Colors.cyan),
+                    ),
+                  ),*/
+
+
+              ////slider
+              Padding(
+              padding: EdgeInsets.all(0.0),
+              child: Stack(
+                children: [
+                  Slider(
+                    onChanged: (v) {
+                      final Position = v * _duration.inMilliseconds;
+                      _audioPlayer
+                          .seek(Duration(milliseconds: Position.round()));
+                    },
+                    value: (_position != null &&
+                            _duration != null &&
+                            _position.inMilliseconds > 0 &&
+                            _position.inMilliseconds < _duration.inMilliseconds)
+                        ? _position.inMilliseconds / _duration.inMilliseconds
+                        : 0.0,
+                  ),])),
+
+                  ///////todo find a better way formatting the player controls
                   Padding(
-                    padding: const EdgeInsets.only(top: 30.0, bottom: 150.0),
+                    padding: const EdgeInsets.only(left: 0.0, top: 5.0, right: 20.0, bottom: 0.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        /////todo 10 sec rewind...expanded container add padding
-                        /////todo find a better way formatting the player controls
-                        new Expanded(child: new Container()),
-                        new Expanded(child: new Container()),
-                        new Expanded(child: new Container()),
+                        //////new Expanded(child: new Container()),
+                        
+                        //////go to previous day
+                        new IconButton(
+                          icon: new Icon(
+                            Icons.skip_previous,
+                            color: Colors.white,
+                            size: 50.0,
+                          ),
+                          onPressed: () {
+                            //todo next button
+                          },
+                        ),
+                        SizedBox(width: 10.0,),
+                        //new Expanded(child: new Container()),
+
+                        ////rewind 10 secs
                         new IconButton(
                           icon: new Icon(
                             Icons.replay_10,
                             color: Colors.white,
                             size: 50.0,
                           ),
-                          onPressed: () {
-                            //todo previous button
-                          },
-                        ),
-                        new Expanded(child: new Container()),
+                          onPressed: 
+                          _isPlaying || _isPaused ? () => _seek(adjust: -10) : null , 
 
-                        ///play button
+                          
+                        ),
+                        SizedBox(width: 20.0,),
+                        ////////new Expanded(child: new Container()),
+
+                        ///play audio button
                         new RawMaterialButton(
                           shape: new CircleBorder(),
                           fillColor: Colors.white,
@@ -195,32 +248,56 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             ),
                           ),
                         ),
-
-                        /////todo 10 sec forward
-                        new Expanded(child: new Container()),
+                        SizedBox(width: 0.0,),
+                        
+                        ///////fforward 10 secs 
                         new IconButton(
                           icon: new Icon(
-                            //previous button
                             Icons.forward_10,
                             color: Colors.white,
                             size: 50.0,
                           ),
+                          onPressed: 
+                          _isPlaying || _isPaused ? () => _seek(adjust: 10) : null , 
+                        ),
+                        SizedBox(width: 10.0,),
+                        
+                        //////go to next day
+                        new IconButton(
+                          icon: new Icon(
+                            Icons.skip_next,
+                            color: Colors.white,
+                            size: 50.0,
+                          ),
                           onPressed: () {
-                            //todo
+                            //todo next day button
                           },
                         ),
-                        new Expanded(child: new Container()),
-                        new Expanded(child: new Container()),
-                        Container(),
-                        new IconButton(
-                            onPressed:
-                                _isPlaying || _isPaused ? () => _stop() : null,
-                            iconSize: 64.0,
-                            icon: new Icon(Icons.stop),
-                            color: Colors.cyan),
+                       ////////////// new Expanded(child: new Container()),
+                       ////////////// new Expanded(child: new Container()),
+                        
                       ],
                     ),
-                  )
+                  ),
+                  
+                  ////temporary stop button, remove this
+                  Padding(
+                     padding: const EdgeInsets.only(top: 0.0, bottom: 0.0),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                          new Container(
+                          child: IconButton(
+                              onPressed: _isPlaying || _isPaused
+                                  ? () => _stop()
+                                  : null,
+                              iconSize: 64.0,
+                              icon: new Icon(Icons.stop),
+                              color: Colors.cyan),
+                        ),
+                      ]
+                    ),
+                  ),
                 ],
               ),
             )),
@@ -229,7 +306,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   }
 
   void _initAudioPlayer() {
-    _audioPlayer = AudioPlayer(playerId: 'odb_light', mode: mode); // playerId can be removed to allow multiple audio players
+    _audioPlayer = AudioPlayer(
+        playerId: 'odb_light',
+        mode: mode); // playerId can be removed to allow multiple audio players
 
     _durationSubscription =
         _audioPlayer.onDurationChanged.listen((duration) => setState(() {
@@ -294,6 +373,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       });
     }
     return result;
+  }
+
+  Future<int> _seek({adjust = 10}) async {
+        final _newPosition = _position.inSeconds + adjust;
+        final result = await _audioPlayer.play(stateUrl,
+        isLocal: isLocal, position: Duration(seconds: _newPosition));
+        return result;
   }
 
   void _onComplete() {
