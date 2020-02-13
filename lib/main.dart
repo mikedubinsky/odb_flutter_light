@@ -32,7 +32,28 @@ class _ExampleAppState extends State<ExampleApp> {
   var audioUrl = 'https://dzxuyknqkmi1e.cloudfront.net/odb/2019/12/odb-12-13-19.mp3';
   var imageUrl = 'https://d626yq9e83zk1.cloudfront.net/files/2019/12/odb20191212.jpg';
 
-  // function to return the audio URL
+   // function to return todays audio URL
+  String defaultAudioUrl(DateTime picked) {
+    String month = twoDigit(picked.month.toString());
+    String day = twoDigit(picked.day.toString());
+    String year = twoDigit(picked.year.toString());
+    String fullYear = picked.year.toString();
+
+    return 'https://dzxuyknqkmi1e.cloudfront.net/odb/$fullYear/$month/odb-$month-$day-$year.mp3';
+  }
+
+  //  return todays image URL
+  String defaultImageUrl(DateTime picked) {
+    String month = twoDigit(picked.month.toString());
+    String day = twoDigit(picked.day.toString());
+    String year = picked.year.toString();
+    String fullYear = picked.year.toString();
+    return 'https://d626yq9e83zk1.cloudfront.net/files/$fullYear/$month/odb$year$month$day.jpg';
+  }
+  
+  
+  
+  // function to return the selected audio URL
   String generateAudioUrl(DateTime picked) {
     String month = twoDigit(picked.month.toString());
     String day = twoDigit(picked.day.toString());
@@ -42,7 +63,7 @@ class _ExampleAppState extends State<ExampleApp> {
     return 'https://dzxuyknqkmi1e.cloudfront.net/odb/$fullYear/$month/odb-$month-$day-$year.mp3';
   }
 
-  ////  return the image URL
+  //  return the selected image URL
   String generateImageUrl(DateTime picked) {
     String month = twoDigit(picked.month.toString());
     String day = twoDigit(picked.day.toString());
@@ -134,7 +155,7 @@ class _ExampleAppState extends State<ExampleApp> {
       child: _tab([
         
         //player widget
-         new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
+         new PlayerWidget(url: defaultAudioUrl(selectedDate), imgUrl: defaultImageUrl(selectedDate)),
 
          //select date widget area
           //SizedBox(height: 20.0,),
