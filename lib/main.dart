@@ -6,18 +6,20 @@ import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'player_widget.dart';
+import 'helpers.dart';
 
 typedef void OnError(Exception exception);
 
-// old testing data to be refactored and removed
-const kUrl1 = 'https://dzxuyknqkmi1e.cloudfront.net/odb/2019/08/odb-08-18-19.mp3';
+// TODO: old testing data to be refactored and removed
+const kUrl1 =
+    'https://dzxuyknqkmi1e.cloudfront.net/odb/2020/02/odb-02-18-20.mp3';
 
 // TODO: Remove Download tab and add download button to main page (download file is currently hard coded)
-
+// TODO: Allow calendar to only go so many days in the future
+// TODO: Store images and devos locallaly
 void main() {
   runApp(new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: new ExampleApp()));
+      debugShowCheckedModeBanner: false, home: new ExampleApp()));
 }
 
 class ExampleApp extends StatefulWidget {
@@ -27,60 +29,35 @@ class ExampleApp extends StatefulWidget {
 
 class _ExampleAppState extends State<ExampleApp> {
   String localFilePath = '';
-  final dateFormat = DateFormat("MMMM-dd-yyyy");
+  String audioUrl;
+  String imageUrl;
   DateTime selectedDate = DateTime.now();
-  var audioUrl = 'https://dzxuyknqkmi1e.cloudfront.net/odb/2019/12/odb-12-13-19.mp3';
-  var imageUrl = 'https://d626yq9e83zk1.cloudfront.net/files/2019/12/odb20191212.jpg';
 
-  // function to return the audio URL
-  String generateAudioUrl(DateTime picked) {
-    String month = twoDigit(picked.month.toString());
-    String day = twoDigit(picked.day.toString());
-    String year = twoDigit(picked.year.toString());
-    String fullYear = picked.year.toString();
-
-    return 'https://dzxuyknqkmi1e.cloudfront.net/odb/$fullYear/$month/odb-$month-$day-$year.mp3';
-  }
-
-  ////  return the image URL
-  String generateImageUrl(DateTime picked) {
-    String month = twoDigit(picked.month.toString());
-    String day = twoDigit(picked.day.toString());
-    String year = picked.year.toString();
-    String fullYear = picked.year.toString();
-    return 'https://d626yq9e83zk1.cloudfront.net/files/$fullYear/$month/odb$year$month$day.jpg';
-  }
-  
-  // function to return 2 digits month or day
-  String twoDigit(String temp) {
-    if (temp.length==1) {
-      return "0" + temp;
-    } else if (temp.length==4) {
-      return temp.substring(temp.length - 2);
-    }  else {
-      return temp;
-    }
+  @override
+  void initState() {
+    super.initState();
+    audioUrl = generateAudioUrl(selectedDate);
+    imageUrl = generateImageUrl(selectedDate);
   }
 
   // Resource: https://stackoverflow.com/questions/52727535/what-is-the-correct-way-to-add-date-picker-in-flutter-app
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2010),
-        lastDate: DateTime(2030),
-         builder: (BuildContext context, Widget child) {
-    return Theme(
-      data: ThemeData(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2030),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData(
             brightness: Brightness.light,
-    primaryColor: const Color(0xFFFAB431),
-    accentColor: Colors.cyan[600],
-      ),
-      child: child,
+            primaryColor: const Color(0xFFFAB431),
+            accentColor: Colors.cyan[600],
+          ),
+          child: child,
+        );
+      },
     );
-  },);
-
-
 
     if (picked != null && picked != selectedDate) {
       setState(() {
@@ -110,60 +87,83 @@ class _ExampleAppState extends State<ExampleApp> {
         color: const Color(0xFFFAB431),
         width: double.infinity,
         height: 800,
-       // padding: EdgeInsets.all(16.0),
+        // padding: EdgeInsets.all(16.0),
         child: Column(
-          children: children.map((w) => Container(child: w, padding: EdgeInsets.all(0.0))).toList(),
+          children: children
+              .map((w) => Container(child: w, padding: EdgeInsets.all(0.0)))
+              .toList(),
         ),
       ),
     );
   }
 
   Widget _btn(String txt, VoidCallback onPressed) {
-    return ButtonTheme(minWidth: 48.0, child: RaisedButton(child: Text(txt), onPressed: onPressed));
+    return ButtonTheme(
+        minWidth: 48.0,
+        child: RaisedButton(child: Text(txt), onPressed: onPressed));
   }
 
   Widget remoteUrl() {
-      // if (audioUrl == '') {
-      //   setState(() {
-      //     audioUrl = generateAudioUrl(selectedDate);
-      //   });
-      // }
-
     return SingleChildScrollView(
-
       child: _tab([
-        
+        Center(
+            child: Container(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                new Text(
+                  DateFormat('MMMM dd, yyyy').format(selectedDate),
+                  style: new TextStyle(
+                    color: Colors.white,
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                    height: 1.5,
+                  ),
+                ),
+                new IconButton(
+                  icon: new Icon(
+                    Icons.calendar_today,
+                    color: Colors.white,
+                    size: 30.0,
+                  ),
+                  onPressed: () => _selectDate(context),
+                ),
+              ]),
+        )),
         //player widget
-         new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
-
-         //select date widget area
-          //SizedBox(height: 20.0,),
-          
-          RaisedButton(
-            onPressed: () => _selectDate(context),
-            child: Text('Select date'),
-          ),
-        Text(
-            "${dateFormat.format(selectedDate.toLocal())}",
-            style: TextStyle(fontWeight: FontWeight.bold)
-        ),
-       /* Text(
-            "Audio URL: $audioUrl",
-            style: TextStyle(fontWeight: FontWeight.bold)
-        ),*/
-       // new PlayerWidget(url: audioUrl, imgUrl: imageUrl),
+        new PlayerWidget(
+            url: audioUrl, imgUrl: imageUrl, devoDate: selectedDate),
       ]),
     );
-
   }
 
   Widget localFile() {
     return _tab([
       //Text('Audio URL: $kUrl1'),
+      // _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
+      // localFilePath == null
+      //     ? Container()
+      //     : PlayerWidget(
+      //         url: localFilePath,
+      //         imgUrl: imageUrl,
+      //         devoDate: selectedDate,
+      //         isLocal: true),
+      _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
+    ]);
+  }
+
+        Widget donateTab() {
+    return _tab([
+      Text('https://ourdailybread.org/donate/our-daily-bread-ministries/'),
      // _btn('Download File', () => _loadFile()),
       //Text('Current local file path: $localFilePath'),
-      localFilePath == null ? Container() : PlayerWidget(url: localFilePath, imgUrl: imageUrl, isLocal: true),
-     _btn('Download File', () => _loadFile()),
+      //localFilePath == null ? Container() : PlayerWidget(url: localFilePath, imgUrl: imageUrl, isLocal: true),
+     //_btn('Download File', () => _loadFile()),
       //Text('Current local file path: $localFilePath'),
     ]);
   }
@@ -176,39 +176,39 @@ class _ExampleAppState extends State<ExampleApp> {
         appBar: AppBar(
           backgroundColor: const Color(0xFFFAB431),
           elevation: 0.0,
-          title: new Center(child: new Text("Our Daily Drive"),),
-          leading: new IconButton(
-            //menu back button
-          icon:new Icon(
-            Icons.arrow_back_ios,
+          title: new Center(
+            child: new Text("Our Daily Drive"),
           ),
-          color: const Color (0xFFDDDDDD),
-          onPressed: (){},
-          ),
+          // leading: new IconButton(
+          //   //menu back button
+          //   icon: new Icon(
+          //     Icons.arrow_back_ios,
+          //   ),
+          //   color: const Color(0xFFDDDDDD),
+          //   onPressed: () {},
+          // ),
           actions: <Widget>[
-             //hamburger menu  button
+            //hamburger menu  button
             new IconButton(
-              icon:new Icon(
-              Icons.menu,
-            ),
-          color: const Color (0xFFDDDDDD),
-          onPressed: (){},
+              icon: new Icon(
+                Icons.menu,
+                size: 30,
+              ),
+              color: const Color(0xFFDDDDDD),
+              onPressed: () {},
             )
-            ],
+          ],
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Stream Audio'),
-              Tab(text: 'Download Audio'),
-              Tab(icon: Icon(Icons.monetization_on)),
+              Tab(text: 'Listen'),
+              Tab(text: 'Download'),
+              Tab(icon: Icon(Icons.favorite)),
             ],
           ),
-
         ),
         body: TabBarView(
-          children: [remoteUrl(), localFile(), localFile()], 
-          
+          children: [remoteUrl(), localFile(), donateTab()],
         ),
-
       ),
     );
   }

@@ -1,34 +1,46 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:odb_flutter_light/theme.dart';
+import 'package:http/http.dart' as http;
+import 'helpers.dart';
 
 enum PlayerState { stopped, playing, paused }
 
 class PlayerWidget extends StatefulWidget {
   final String url;
   final String imgUrl;
+  final DateTime devoDate;
+  final String title;
+  final String author;
   final bool isLocal;
   final PlayerMode mode;
 
   PlayerWidget({
     @required this.url,
     @required this.imgUrl,
+    @required this.devoDate,
+    this.title = "Daily Devotional",
+    this.author = "Our Daily Bread",
     this.isLocal = false,
     this.mode = PlayerMode.MEDIA_PLAYER,
   });
 
   @override
   State<StatefulWidget> createState() {
-    return new _PlayerWidgetState(url, imgUrl, isLocal, mode);
+    return new _PlayerWidgetState(
+        url, imgUrl, devoDate, title, author, isLocal, mode);
   }
 }
 
 class _PlayerWidgetState extends State<PlayerWidget> {
   String stateUrl;
   String imageUrl;
+  DateTime devoDateState;
+  String devoTitle;
+  String authorName;
   bool isLocal;
   PlayerMode mode;
 
@@ -49,19 +61,24 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   get _durationText => _duration?.toString()?.split('.')?.first ?? '';
   get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
-  _PlayerWidgetState(this.stateUrl, this.imageUrl, this.isLocal, this.mode);
+  _PlayerWidgetState(this.stateUrl, this.imageUrl, this.devoDateState,
+      this.devoTitle, this.authorName, this.isLocal, this.mode);
 
   @override
   void initState() {
     super.initState();
+    fetchPost(devoDateState);
     _initAudioPlayer();
   }
 
   @override
   void didUpdateWidget(Widget oldWidget) {
+    fetchPost(widget.devoDate);
+
     setState(() {
       stateUrl = widget.url;
       imageUrl = widget.imgUrl;
+      devoDateState = widget.devoDate;
     });
     _audioPlayer.setUrl(widget.url);
   }
@@ -91,64 +108,54 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             fit: BoxFit.fitHeight,
           ),
         ),
-                  ////progress indicator
-                  new FractionallySizedBox(
-                    //height: 9.0,
-                    widthFactor: 1,
-                    child: new LinearProgressIndicator(
-                      value: (_position != null &&
-                              _duration != null &&
-                              _position.inMilliseconds > 0 &&
-                              _position.inMilliseconds <
-                                  _duration.inMilliseconds)
-                          ? _position.inMilliseconds / _duration.inMilliseconds
-                          : 0.0,
-                      valueColor: new AlwaysStoppedAnimation(Colors.cyan),
-                    ),
-                  ),
-        //progress indicator, song title, artist name and controls
         new Container(
             color: accentColor,
             child: new Padding(
               padding: const EdgeInsets.all(5.0),
               child: new Column(
                 children: <Widget>[
-                  
-                  ////devo info
                   new RichText(
                       text: new TextSpan(text: '', children: [
+                    const TextSpan(
+                      text: '\n',
+                    ),
                     new TextSpan(
-                      text: 'Devo Title\n',
+                      text: devoTitle,
                       style: new TextStyle(
                         color: Colors.white,
-                        fontSize: 16.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 4.0,
+                        letterSpacing: 3.0,
                         height: 1.5,
                       ),
                     ),
+                    const TextSpan(
+                      text: '\n',
+                    ),
                     new TextSpan(
-                        text: 'Authors Name\n',
+                        text: authorName,
                         style: new TextStyle(
                           color: Colors.white.withOpacity(0.65),
-                          fontSize: 12.0,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 3.0,
+                          letterSpacing: 2.0,
                           height: 1.5,
                         ))
                   ])),
-                  
                   /////duration info
-                   Align(
-                    child: Text(
-                      _position != null
-                          ? '${_positionText ?? ''} / ${_durationText ?? ''}'
-                          : _duration != null ? _durationText : '',
-                      style: new TextStyle(
-                          color: Colors.white.withOpacity(0.95),
-                          fontSize: 20.0),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 15, 0, 5),
+                    child: Align(
+                      child: Text(
+                        _position != null
+                            ? '${_positionText ?? ''} / ${_durationText ?? ''}'
+                            : _duration != null ? _durationText : '',
+                        style: new TextStyle(
+                            color: Colors.white.withOpacity(0.95),
+                            fontSize: 20.0),
+                      ),
+                      alignment: Alignment.topCenter,
                     ),
-                    alignment: Alignment.topCenter,
                   ),
                   ////progress indicator
                   ///////todo add a circle to the progress
@@ -167,34 +174,36 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                     ),
                   ),*/
 
-
-              ////slider
-              Padding(
-              padding: EdgeInsets.all(0.0),
-              child: Stack(
-                children: [
-                  Slider(
-                    onChanged: (v) {
-                      final Position = v * _duration.inMilliseconds;
-                      _audioPlayer
-                          .seek(Duration(milliseconds: Position.round()));
-                    },
-                    value: (_position != null &&
-                            _duration != null &&
-                            _position.inMilliseconds > 0 &&
-                            _position.inMilliseconds < _duration.inMilliseconds)
-                        ? _position.inMilliseconds / _duration.inMilliseconds
-                        : 0.0,
-                  ),])),
+                  ////slider
+                  Padding(
+                      padding: EdgeInsets.all(0.0),
+                      child: Stack(children: [
+                        Slider(
+                          onChanged: (v) {
+                            final Position = v * _duration.inMilliseconds;
+                            _audioPlayer
+                                .seek(Duration(milliseconds: Position.round()));
+                          },
+                          value: (_position != null &&
+                                  _duration != null &&
+                                  _position.inMilliseconds > 0 &&
+                                  _position.inMilliseconds <
+                                      _duration.inMilliseconds)
+                              ? _position.inMilliseconds /
+                                  _duration.inMilliseconds
+                              : 0.0,
+                        ),
+                      ])),
 
                   ///////todo find a better way formatting the player controls
                   Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 5.0, right: 20.0, bottom: 0.0),
+                    padding: const EdgeInsets.only(
+                        left: 0.0, top: 15.0, right: 20.0, bottom: 0.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         //////new Expanded(child: new Container()),
-                        
+
                         //////go to previous day
                         new IconButton(
                           icon: new Icon(
@@ -203,10 +212,12 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             size: 50.0,
                           ),
                           onPressed: () {
-                            //todo next button
+                            _changeDay(-1);
                           },
                         ),
-                        SizedBox(width: 10.0,),
+                        SizedBox(
+                          width: 10.0,
+                        ),
                         //new Expanded(child: new Container()),
 
                         ////rewind 10 secs
@@ -216,12 +227,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             color: Colors.white,
                             size: 50.0,
                           ),
-                          onPressed: 
-                          _isPlaying || _isPaused ? () => _seek(adjust: -10) : null , 
-
-                          
+                          onPressed: _isPlaying || _isPaused
+                              ? () => _seek(adjust: -10)
+                              : null,
                         ),
-                        SizedBox(width: 20.0,),
+                        SizedBox(
+                          width: 20.0,
+                        ),
                         ////////new Expanded(child: new Container()),
 
                         ///play audio button
@@ -248,20 +260,25 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 0.0,),
-                        
-                        ///////fforward 10 secs 
+                        SizedBox(
+                          width: 0.0,
+                        ),
+
+                        ///////fforward 10 secs
                         new IconButton(
                           icon: new Icon(
                             Icons.forward_10,
                             color: Colors.white,
                             size: 50.0,
                           ),
-                          onPressed: 
-                          _isPlaying || _isPaused ? () => _seek(adjust: 10) : null , 
+                          onPressed: _isPlaying || _isPaused
+                              ? () => _seek(adjust: 10)
+                              : null,
                         ),
-                        SizedBox(width: 10.0,),
-                        
+                        SizedBox(
+                          width: 10.0,
+                        ),
+
                         //////go to next day
                         new IconButton(
                           icon: new Icon(
@@ -270,32 +287,10 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             size: 50.0,
                           ),
                           onPressed: () {
-                            //todo next day button
+                            _changeDay(1);
                           },
                         ),
-                       ////////////// new Expanded(child: new Container()),
-                       ////////////// new Expanded(child: new Container()),
-                        
                       ],
-                    ),
-                  ),
-                  
-                  ////temporary stop button, remove this
-                  Padding(
-                     padding: const EdgeInsets.only(top: 0.0, bottom: 0.0),
-                    child: new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                          new Container(
-                          child: IconButton(
-                              onPressed: _isPlaying || _isPaused
-                                  ? () => _stop()
-                                  : null,
-                              iconSize: 64.0,
-                              icon: new Icon(Icons.stop),
-                              color: Colors.cyan),
-                        ),
-                      ]
                     ),
                   ),
                 ],
@@ -376,13 +371,72 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   }
 
   Future<int> _seek({adjust = 10}) async {
-        final _newPosition = _position.inSeconds + adjust;
-        final result = await _audioPlayer.play(stateUrl,
+    final _newPosition = _position.inSeconds + adjust;
+    final result = await _audioPlayer.play(stateUrl,
         isLocal: isLocal, position: Duration(seconds: _newPosition));
-        return result;
+    return result;
   }
 
   void _onComplete() {
     setState(() => _playerState = PlayerState.stopped);
+  }
+
+  // call this function from the track skip buttons
+// expects 1 or -1 to change the devo by 1 day
+  Future<Null> _changeDay(int day) async {
+    DateTime newDate = devoDateState;
+
+    if (day != null) {
+      if (day == 1) {
+        newDate = devoDateState.add(new Duration(days: 1)); // +1 day;
+      } else if (day == -1) {
+        newDate = devoDateState.add(new Duration(days: -1)); // -1 day;
+      }
+
+      await _pause();
+      await fetchPost(newDate);
+
+      setState(() {
+        devoDateState = newDate;
+        stateUrl = generateAudioUrl(newDate);
+        imageUrl = generateImageUrl(newDate);
+        _duration = Duration(seconds: 0);
+       _position = Duration(seconds: 0);
+      });
+      await _play();
+    }
+  }
+
+  Future<Null> fetchPost(DateTime dvDate) async {
+    String url = 'https://api.experience.odb.org/devotionals?on=';
+    url = url +
+        twoDigit(dvDate.month.toString()) +
+        '-' +
+        twoDigit(dvDate.day.toString()) +
+        '-' +
+        dvDate.year.toString();
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      // If the call to the server was successful, parse the JSON
+      List<dynamic> values = new List<dynamic>();
+      values = json.decode(response.body);
+      if (values.length == 1) {
+        if (values[0] != null) {
+          Map<String, dynamic> map = values[0];
+          setState(() {
+            devoTitle = map['title'];
+            authorName = 'By: ' + map['author_name'];
+          });
+          // debugPrint('Title: ${map['title']}');
+          // debugPrint('Author: ${map['author_name']}');
+        }
+      } else {
+        debugPrint('Received ${values.length} devos, expected 1');
+      }
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load devo from microservice');
+    }
   }
 }
