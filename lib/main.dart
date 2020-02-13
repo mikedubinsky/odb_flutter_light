@@ -199,7 +199,7 @@ class _ExampleAppState extends State<ExampleApp> {
             tabs: [
               Tab(text: 'Stream Audio'),
               Tab(text: 'Download Audio'),
-              Tab(icon: Icon(Icons.monetization_on)),
+              Tab(icon: Icon(Icons.favorite)),
             ],
           ),
 
