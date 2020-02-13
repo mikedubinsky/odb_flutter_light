@@ -108,21 +108,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             fit: BoxFit.fitHeight,
           ),
         ),
-        ////progress indicator
-        new FractionallySizedBox(
-          //height: 9.0,
-          widthFactor: 1,
-          child: new LinearProgressIndicator(
-            value: (_position != null &&
-                    _duration != null &&
-                    _position.inMilliseconds > 0 &&
-                    _position.inMilliseconds < _duration.inMilliseconds)
-                ? _position.inMilliseconds / _duration.inMilliseconds
-                : 0.0,
-            valueColor: new AlwaysStoppedAnimation(Colors.cyan),
-          ),
-        ),
-        //progress indicator, song title, artist name and controls
         new Container(
             color: accentColor,
             child: new Padding(

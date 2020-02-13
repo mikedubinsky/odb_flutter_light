@@ -16,6 +16,7 @@ const kUrl1 =
 
 // TODO: Remove Download tab and add download button to main page (download file is currently hard coded)
 // TODO: Allow calendar to only go so many days in the future
+// TODO: Store images and devos locallaly
 void main() {
   runApp(new MaterialApp(
       debugShowCheckedModeBanner: false, home: new ExampleApp()));
@@ -167,19 +168,20 @@ class _ExampleAppState extends State<ExampleApp> {
           title: new Center(
             child: new Text("Our Daily Drive"),
           ),
-          leading: new IconButton(
-            //menu back button
-            icon: new Icon(
-              Icons.arrow_back_ios,
-            ),
-            color: const Color(0xFFDDDDDD),
-            onPressed: () {},
-          ),
+          // leading: new IconButton(
+          //   //menu back button
+          //   icon: new Icon(
+          //     Icons.arrow_back_ios,
+          //   ),
+          //   color: const Color(0xFFDDDDDD),
+          //   onPressed: () {},
+          // ),
           actions: <Widget>[
             //hamburger menu  button
             new IconButton(
               icon: new Icon(
                 Icons.menu,
+                size: 30,
               ),
               color: const Color(0xFFDDDDDD),
               onPressed: () {},
@@ -189,7 +191,7 @@ class _ExampleAppState extends State<ExampleApp> {
             tabs: [
               Tab(text: 'Stream Audio'),
               Tab(text: 'Download Audio'),
-              Tab(icon: Icon(Icons.monetization_on)),
+              Tab(icon: Icon(Icons.favorite)),
             ],
           ),
         ),
