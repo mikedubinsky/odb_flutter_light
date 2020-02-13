@@ -145,14 +145,25 @@ class _ExampleAppState extends State<ExampleApp> {
       //Text('Audio URL: $kUrl1'),
       // _btn('Download File', () => _loadFile()),
       //Text('Current local file path: $localFilePath'),
-      localFilePath == null
-          ? Container()
-          : PlayerWidget(
-              url: localFilePath,
-              imgUrl: imageUrl,
-              devoDate: selectedDate,
-              isLocal: true),
+      // localFilePath == null
+      //     ? Container()
+      //     : PlayerWidget(
+      //         url: localFilePath,
+      //         imgUrl: imageUrl,
+      //         devoDate: selectedDate,
+      //         isLocal: true),
       _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
+    ]);
+  }
+
+        Widget donateTab() {
+    return _tab([
+      Text('https://ourdailybread.org/donate/our-daily-bread-ministries/'),
+     // _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
+      //localFilePath == null ? Container() : PlayerWidget(url: localFilePath, imgUrl: imageUrl, isLocal: true),
+     //_btn('Download File', () => _loadFile()),
       //Text('Current local file path: $localFilePath'),
     ]);
   }
@@ -189,14 +200,14 @@ class _ExampleAppState extends State<ExampleApp> {
           ],
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Stream Audio'),
-              Tab(text: 'Download Audio'),
+              Tab(text: 'Listen'),
+              Tab(text: 'Download'),
               Tab(icon: Icon(Icons.favorite)),
             ],
           ),
         ),
         body: TabBarView(
-          children: [remoteUrl(), localFile(), localFile()],
+          children: [remoteUrl(), localFile(), donateTab()],
         ),
       ),
     );
