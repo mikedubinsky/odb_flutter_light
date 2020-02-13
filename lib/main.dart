@@ -188,6 +188,16 @@ class _ExampleAppState extends State<ExampleApp> {
       //Text('Current local file path: $localFilePath'),
     ]);
   }
+      Widget donateTab() {
+    return _tab([
+      Text('https://ourdailybread.org/donate/our-daily-bread-ministries/'),
+     // _btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
+      //localFilePath == null ? Container() : PlayerWidget(url: localFilePath, imgUrl: imageUrl, isLocal: true),
+     //_btn('Download File', () => _loadFile()),
+      //Text('Current local file path: $localFilePath'),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +236,7 @@ class _ExampleAppState extends State<ExampleApp> {
 
         ),
         body: TabBarView(
-          children: [remoteUrl(), localFile(), localFile()], 
+          children: [remoteUrl(), localFile(), donateTab()], 
           
         ),
 
