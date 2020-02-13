@@ -17,6 +17,7 @@ const kUrl1 =
 // TODO: Remove Download tab and add download button to main page (download file is currently hard coded)
 // TODO: Allow calendar to only go so many days in the future
 // TODO: Store images and devos locallaly
+// TODO: Consider another color scheme like (0xFF004ecc)
 void main() {
   runApp(new MaterialApp(
       debugShowCheckedModeBanner: false, home: new ExampleApp()));
@@ -173,6 +174,7 @@ class _ExampleAppState extends State<ExampleApp> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: const Color(0xFFFAB431),
         appBar: AppBar(
           backgroundColor: const Color(0xFFFAB431),
           elevation: 0.0,
