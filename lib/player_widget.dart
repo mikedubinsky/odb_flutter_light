@@ -100,7 +100,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         new Container(
-          color: Colors.tealAccent,
+          color: Colors.orangeAccent[300],
           width: double.infinity,
           height: 330.0,
           child: Image.network(
@@ -198,14 +198,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                   ///////todo find a better way formatting the player controls
                   Padding(
                     padding: const EdgeInsets.only(
-                        left: 0.0, top: 15.0, right: 20.0, bottom: 0.0),
+                        left: 0.0, top: 35.0, right: 0.0, bottom: 0.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        //////new Expanded(child: new Container()),
-
-                        //////go to previous day
-                        new IconButton(
+                        Expanded(child: Container(
+                          //color: Colors.blue,
+                          child: new IconButton(
                           icon: new Icon(
                             Icons.skip_previous,
                             color: Colors.white,
@@ -215,13 +214,16 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             _changeDay(-1);
                           },
                         ),
-                        SizedBox(
-                          width: 10.0,
-                        ),
-                        //new Expanded(child: new Container()),
+                        
+                        )),
+                        //////new Expanded(child: new Container()),
 
-                        ////rewind 10 secs
-                        new IconButton(
+                        //////go to previous day
+                        
+                        //new Expanded(child: new Container()),
+                        Expanded(child: Container(
+                          //color: Colors.red,
+                          child: new IconButton(
                           icon: new Icon(
                             Icons.replay_10,
                             color: Colors.white,
@@ -231,13 +233,19 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                               ? () => _seek(adjust: -10)
                               : null,
                         ),
-                        SizedBox(
-                          width: 20.0,
-                        ),
+                        
+                        )),
+                        ////rewind 10 secs
+                        
+                       
                         ////////new Expanded(child: new Container()),
 
                         ///play audio button
-                        new RawMaterialButton(
+                        ///
+                        Expanded(child: Container(
+                          height:100,
+                          //color: Colors.blue,
+                          child:  new RawMaterialButton(
                           shape: new CircleBorder(),
                           fillColor: Colors.white,
                           splashColor: lightAccentColor,
@@ -256,16 +264,20 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             child: new Icon(
                               _isPlaying ? Icons.pause : Icons.play_arrow,
                               color: darkAccentColor,
-                              size: 90,
+                              size: 50,
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: 0.0,
-                        ),
+                        
+                        )),
+                       
+                       
 
                         ///////fforward 10 secs
-                        new IconButton(
+                        ///
+                        Expanded(child: Container(
+                          //color: Colors.red,
+                          child: new IconButton(
                           icon: new Icon(
                             Icons.forward_10,
                             color: Colors.white,
@@ -275,12 +287,15 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                               ? () => _seek(adjust: 10)
                               : null,
                         ),
-                        SizedBox(
-                          width: 10.0,
-                        ),
+                        
+                        )),
+                        
+                       
 
                         //////go to next day
-                        new IconButton(
+                        Expanded(child: Container(
+                          //color: Colors.blue,
+                          child: new IconButton(
                           icon: new Icon(
                             Icons.skip_next,
                             color: Colors.white,
@@ -290,6 +305,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                             _changeDay(1);
                           },
                         ),
+                        
+                        )),
+                        
                       ],
                     ),
                   ),
