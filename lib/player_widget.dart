@@ -17,6 +17,7 @@ class PlayerWidget extends StatefulWidget {
   final String author;
   final bool isLocal;
   final PlayerMode mode;
+  final calendarPicker;
 
   PlayerWidget({
     @required this.url,
@@ -26,12 +27,13 @@ class PlayerWidget extends StatefulWidget {
     this.author = "Our Daily Bread",
     this.isLocal = false,
     this.mode = PlayerMode.MEDIA_PLAYER,
+    this.calendarPicker
   });
 
   @override
   State<StatefulWidget> createState() {
     return new _PlayerWidgetState(
-        url, imgUrl, devoDate, title, author, isLocal, mode);
+        url, imgUrl, devoDate, title, author, isLocal, mode, calendarPicker);
   }
 }
 
@@ -43,6 +45,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   String authorName;
   bool isLocal;
   PlayerMode mode;
+  Function calendarPicker;
 
   AudioPlayer _audioPlayer;
   AudioPlayerState _audioPlayerState;
@@ -62,7 +65,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
   _PlayerWidgetState(this.stateUrl, this.imageUrl, this.devoDateState,
-      this.devoTitle, this.authorName, this.isLocal, this.mode);
+      this.devoTitle, this.authorName, this.isLocal, this.mode, this.calendarPicker);
 
   @override
   void initState() {
@@ -416,12 +419,13 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
       setState(() {
         devoDateState = newDate;
-        stateUrl = generateAudioUrl(newDate);
-        imageUrl = generateImageUrl(newDate);
+        // stateUrl = generateAudioUrl(newDate);
+        // imageUrl = generateImageUrl(newDate);
         _duration = Duration(seconds: 0);
        _position = Duration(seconds: 0);
       });
       await _play();
+      await calendarPicker(newDate);
     }
   }
 
