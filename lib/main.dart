@@ -18,6 +18,7 @@ const kUrl1 =
 // TODO: Allow calendar to only go so many days in the future
 // TODO: Store images and devos locallaly
 // TODO: Consider another color scheme like (0xFF004ecc)
+
 void main() {
   runApp(new MaterialApp(
       debugShowCheckedModeBanner: false, home: new ExampleApp()));
@@ -68,6 +69,14 @@ class _ExampleAppState extends State<ExampleApp> {
       });
     }
   }
+
+      Future _setDate(DateTime picked) async {
+      setState(() {
+              selectedDate = picked;
+              audioUrl = generateAudioUrl(picked);
+             imageUrl = generateImageUrl(picked);
+            });
+      }
 
   Future _loadFile() async {
     final bytes = await readBytes(kUrl1);
@@ -136,7 +145,7 @@ class _ExampleAppState extends State<ExampleApp> {
         )),
         //player widget
         new PlayerWidget(
-            url: audioUrl, imgUrl: imageUrl, devoDate: selectedDate),
+            url: audioUrl, imgUrl: imageUrl, devoDate: selectedDate, calendarPicker: _setDate),
       ]),
     );
   }
