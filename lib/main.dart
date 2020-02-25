@@ -18,6 +18,7 @@ const kUrl1 =
 // TODO: Allow calendar to only go so many days in the future
 // TODO: Store images and devos locallaly
 // TODO: Consider another color scheme like (0xFF004ecc)
+
 void main() {
   runApp(new MaterialApp(
       debugShowCheckedModeBanner: false, home: new ExampleApp()));

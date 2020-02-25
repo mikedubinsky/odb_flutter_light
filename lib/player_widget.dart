@@ -402,7 +402,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     setState(() => _playerState = PlayerState.stopped);
   }
 
-  // call this function from the track skip buttons
+// call this function from the track skip buttons
 // expects 1 or -1 to change the devo by 1 day
   Future<Null> _changeDay(int day) async {
     DateTime newDate = devoDateState;
