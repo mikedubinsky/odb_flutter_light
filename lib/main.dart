@@ -43,8 +43,6 @@ class _ExampleAppState extends State<ExampleApp> {
 
   // Resource: https://stackoverflow.com/questions/52727535/what-is-the-correct-way-to-add-date-picker-in-flutter-app
   Future<Null> _selectDate(BuildContext context) async {
-    print('context:');
-    print(context);
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
